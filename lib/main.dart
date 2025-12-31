@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/ui/list.dart' as pages;
+import 'package:meetwho/ui/navbar/foot_navbar.dart' as pages;
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         return MeetWhoBackground(child: child ?? const SizedBox());
       },
 
-      home: const pages.List(),
+      home: const pages.FootNavbar(),
     );
   }
 }
@@ -52,6 +52,10 @@ class MeetWhoBackground extends StatelessWidget {
               ),
             ),
           ),
+        ),
+        // Place the app's screens above the background
+        Positioned.fill(
+          child: child,
         ),
       ],
     );
