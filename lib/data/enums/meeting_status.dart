@@ -1,0 +1,4 @@
+enum MeetingStatus {
+  UPCOMING,
+  COMPLETED,
+}
