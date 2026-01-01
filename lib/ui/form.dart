@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meetwho/model/profile.dart';
-import 'package:uuid/uuid.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({super.key});

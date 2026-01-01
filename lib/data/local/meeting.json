@@ -1,0 +1,42 @@
+[
+  {
+    "meetingId": "1",
+    "personName": "Alice Wonderland",
+    "category": "work",
+    "date": "2025-12-25",
+    "time": "10:00",
+    "location": "Office A",
+    "notes": "Project planning meeting",
+    "status": "COMPLETED"
+  },
+  {
+    "meetingId": "2",
+    "personName": "Bob Thebuilder",
+    "category": "project",
+    "date": "2026-01-05",
+    "time": "14:30",
+    "location": "Online Call",
+    "notes": "Weekly standup",
+    "status": "UPCOMING"
+  },
+  {
+    "meetingId": "3",
+    "personName": "Charlie Chaplin",
+    "category": "personal",
+    "date": "2026-01-01",
+    "time": "09:00",
+    "location": "Cafe Corner",
+    "notes": "Coffee chat",
+    "status": "UPCOMING"
+  },
+  {
+    "meetingId": "4",
+    "personName": "Diana Prince",
+    "category": "teammate",
+    "date": "2025-11-15",
+    "time": "11:00",
+    "location": "Conference Room 3",
+    "notes": "Performance review",
+    "status": "COMPLETED"
+  }
+]
