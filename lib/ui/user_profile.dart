@@ -7,7 +7,7 @@ import 'package:meetwho/ui/widgets/overview_card.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
-
+  
   // Calculate the number of past meetings.
   int get _historyCount {
     final now = DateTime.now();
@@ -21,7 +21,6 @@ class UserProfileScreen extends StatelessWidget {
     }
     return count;
   }
-
   // Calculate the number of meetings for each category.
   Map<Category, int> get _categoryCounts {
     final Map<Category, int> counts = {};
@@ -86,7 +85,6 @@ class UserProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
 
               // Display a summary of the meetings.
@@ -98,7 +96,6 @@ class UserProfileScreen extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               const SizedBox(height: 16),
 
               Row(
@@ -114,10 +111,9 @@ class UserProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 30),
 
-              // ===== BAR CHART =====
+              // Chart Card Text
               const Text(
                 "Chart",
                 style: TextStyle(
@@ -126,7 +122,6 @@ class UserProfileScreen extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-
               const SizedBox(height: 16),
 
               Container(
