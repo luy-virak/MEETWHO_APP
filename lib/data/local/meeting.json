@@ -38,5 +38,25 @@
     "location": "Conference Room 3",
     "notes": "Performance review",
     "status": "COMPLETED"
+  },
+  {
+    "meetingId": "5",
+    "personName": "Eva Green",
+    "category": "other",
+    "date": "2026-01-10",
+    "time": "18:00",
+    "location": "Community Hall",
+    "notes": "Volunteer event",
+    "status": "UPCOMING"
+  },
+  {
+    "meetingId": "6",
+    "personName": "Ly Kimkheng",
+    "category": "school",
+    "date": "2026-01-10",
+    "time": "18:00",
+    "location": "CADT",
+    "notes": "Room A001",
+    "status": "UPCOMING"
   }
 ]
