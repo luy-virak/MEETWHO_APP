@@ -3,4 +3,6 @@ enum Category {
   project,
   personal,
   teammate,
+  school,
+  other,
 }

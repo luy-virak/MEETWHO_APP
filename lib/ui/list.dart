@@ -22,7 +22,7 @@ class _ListState extends State<List> {
     if(newProfile != null) {
       // If a new profile was created, add it to the list
       setState(() {
-        repository.dummylistitem.add(newProfile);
+        repository.dummylistprofile.add(newProfile);
       });
     }
   }
@@ -31,11 +31,11 @@ class _ListState extends State<List> {
 
     Widget content = const Center(child: Text('No Meetings added yet.'));
 
-    if (repository.dummylistitem.isNotEmpty) {
+    if (repository.dummylistprofile.isNotEmpty) {
       content = ListView.builder(
-        itemCount: repository.dummylistitem.length,
+        itemCount: repository.dummylistprofile.length,
         itemBuilder: (context, index) {
-          final profile = repository.dummylistitem[index];
+          final profile = repository.dummylistprofile[index];
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(

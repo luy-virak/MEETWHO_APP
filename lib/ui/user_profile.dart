@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meetwho/data/list_repository.dart' as repository;
+import 'package:meetwho/data/enums/category.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -8,17 +9,21 @@ class UserProfileScreen extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     int count = 0;
-    for (final profile in repository.dummylistitem) {
-      try {
-        final meetingDate = DateTime.parse(profile.date);
-        if (meetingDate.isBefore(today)) {
-          count++;
-        }
-      } catch (e) {
-        // Ignore profiles with invalid date format
+    for (final meeting in repository.dummylistitem) {
+      final meetingDate = meeting.dateTime;
+      if (meetingDate.isBefore(today)) {
+        count++;
       }
     }
     return count;
+  }
+
+  Map<Category, int> get _categoryCounts {
+    final Map<Category, int> counts = {};
+    for (final meeting in repository.dummylistitem) {
+      counts.update(meeting.category, (value) => value + 1, ifAbsent: () => 1);
+    }
+    return counts;
   }
 
   @override
@@ -151,14 +156,11 @@ class UserProfileScreen extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        _CategoryItem(text: "Personal   1"),
-                        _CategoryItem(text: "Work       1"),
-                        _CategoryItem(text: "Teammate   1"),
-                        _CategoryItem(text: "Project    1"),
-                        _CategoryItem(text: "School     1"),
-                        _CategoryItem(text: "Other      1"),
-                      ],
+                      children: _categoryCounts.entries.map((entry) {
+                        return _CategoryItem(
+                            text:
+                                "${entry.key.name.substring(0, 1).toUpperCase()}${entry.key.name.substring(1)}   ${entry.value}");
+                      }).toList(),
                     ),
                   ],
                 ),
