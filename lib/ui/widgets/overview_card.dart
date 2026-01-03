@@ -4,7 +4,7 @@ class OverviewCard extends StatelessWidget {
   final String value;
   final String label;
 
-  const OverviewCard({
+  const OverviewCard({super.key, 
     required this.value,
     required this.label,
   });

@@ -46,7 +46,7 @@ class CategoryPieChart extends StatelessWidget {
 
         const SizedBox(width: 20),
 
-        /// LEGEND (RIGHT SIDE)
+        /// LEGEND
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class CategoryPieChart extends StatelessWidget {
         return Colors.blue;
       case Category.personal:
         return Colors.green;
-      case Category.teammate:
+      case Category.team:
         return Colors.yellow;
       case Category.school:
         return Colors.pink;
@@ -116,7 +116,7 @@ class CategoryPieChart extends StatelessWidget {
         return "Project";
       case Category.personal:
         return "Personal";
-      case Category.teammate:
+      case Category.team:
         return "Team";
       case Category.school:
         return "School";

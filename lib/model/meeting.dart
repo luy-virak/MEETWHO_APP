@@ -29,13 +29,13 @@ class Meeting {
       meetingId: json['meetingId'],
       personName: json['personName'],
       category: Category.values.firstWhere(
-        (c) => c.name == json['category'],
+        (c) => c.name.toLowerCase() == json['category'].toLowerCase(),
       ),
       dateTime: DateTime.parse('$date $time'),
       location: json['location'],
       notes: json['notes'],
       status: MeetingStatus.values.firstWhere(
-        (s) => s.name == json['status'],
+        (s) => s.name.toLowerCase() == json['status'].toLowerCase(),
       ),
     );
   }

@@ -2,7 +2,7 @@ enum Category {
   work,
   project,
   personal,
-  teammate,
+  team,
   school,
   other,
 }

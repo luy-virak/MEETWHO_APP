@@ -8,7 +8,7 @@ import 'package:meetwho/ui/widgets/overview_card.dart';
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
   
-  // Calculate the number of past meetings.
+  // Calculate the number of past meetings. [History]
   int get _historyCount {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -21,7 +21,7 @@ class UserProfileScreen extends StatelessWidget {
     }
     return count;
   }
-  // Calculate the number of meetings for each category.
+  // Calculate the number of meetings for each category. [Overview]
   Map<Category, int> get _categoryCounts {
     final Map<Category, int> counts = {};
     for (final meeting in repository.dummylistitem) {
