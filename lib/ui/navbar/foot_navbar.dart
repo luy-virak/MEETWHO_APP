@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:meetwho/ui/list.dart' as pages;
 
+import 'package:meetwho/ui/user_profile.dart' as pages; // kim
+import 'package:meetwho/ui/history_screen.dart' as pages; // kim
+
 class FootNavbar extends StatefulWidget {
   const FootNavbar({super.key});
 
@@ -14,8 +17,9 @@ class _FootNavbarState extends State<FootNavbar> {
 
   static const List<Widget> _pages = <Widget>[
     pages.List(),
-    Center(child: Text('Search Page')),
-    Center(child: Text('Profile Page')),
+    // Center(child: Text('Search Page')),
+    pages.HistoryScreen(), // kim
+    pages.UserProfileScreen(), // kim
   ];
 
   @override
