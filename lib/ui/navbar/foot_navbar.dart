@@ -21,11 +21,9 @@ class _FootNavbarState extends State<FootNavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBody: true, // makes the nav look more "floating"
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: CircleNavBar(
         activeIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
@@ -60,12 +58,20 @@ class _FootNavbarState extends State<FootNavbar> {
         gradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color.fromARGB(255, 47, 128, 237),Color.fromARGB(255, 49, 132, 237),Color.fromARGB(255, 86, 204, 242),],
+          colors: [
+            Color.fromARGB(255, 47, 128, 237),
+            Color.fromARGB(255, 49, 132, 237),
+            Color.fromARGB(255, 86, 204, 242),
+          ],
         ),
         circleGradient: const LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [Color.fromARGB(255, 47, 128, 237),Color.fromARGB(255, 49, 132, 237),Color.fromARGB(255, 86, 204, 242)],
+          colors: [
+            Color.fromARGB(255, 47, 128, 237),
+            Color.fromARGB(255, 49, 132, 237),
+            Color.fromARGB(255, 86, 204, 242),
+          ],
         ),
       ),
     );
