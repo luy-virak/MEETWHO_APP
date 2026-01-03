@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Alice Smith",
+    "time": "10:30",
+    "date": "2026-01-05",
+    "interests": ["work"]
+  },
+  {
+    "name": "Bob Johnson",
+    "time": "14:00",
+    "date": "2026-01-08",
+    "interests": ["project"]
+  },
+  {
+    "name": "Charlie Brown",
+    "time": "09:15",
+    "date": "2025-12-20",
+    "interests": ["personal"]
+  },
+  {
+    "name": "Diana Prince",
+    "time": "16:45",
+    "date": "2026-01-03",
+    "interests": ["team"]
+  },
+  {
+    "name": "Eve Adams",
+    "time": "11:00",
+    "date": "2025-11-10",
+    "interests": ["school"]
+  },
+  {
+    "name": "Frank White",
+    "time": "19:30",
+    "date": "2026-01-15",
+    "interests": ["other"]
+  },
+  {
+    "name": "Grace Black",
+    "time": "08:00",
+    "date": "2026-01-04",
+    "interests": ["work"]
+  }
+]
