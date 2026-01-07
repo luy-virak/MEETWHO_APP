@@ -1,12 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:meetwho/data/list_repository.dart' as repository;
 import 'package:meetwho/data/enums/category.dart';
+import 'package:meetwho/model/user.dart';
+import 'package:meetwho/data/user_repository.dart' as user_repo;
 
 import 'package:meetwho/ui/widgets/category_pie_chart.dart';
 import 'package:meetwho/ui/widgets/overview_card.dart';
 
-class UserProfileScreen extends StatelessWidget {
+class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
+
+  @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  Future<void> _showLoginDialog() async {
+    final nameController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Enter Your Name'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: nameController,
+            autofocus: true,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? 'Please enter a name'
+                : null,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.of(context).pop(nameController.text.trim());
+              }
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+
+    if (name != null && name.isNotEmpty) {
+      setState(() {
+        user_repo.currentUser = User(name: name);
+      });
+    }
+  }
+
+  void _logout() {
+    setState(() {
+      user_repo.currentUser = null;
+    });
+  }
 
   // Helper to convert the string 'purpose' from Profile to a Category enum
   Category _mapStringToCategory(String interest) {
@@ -29,14 +84,13 @@ class UserProfileScreen extends StatelessWidget {
   // Calculate the number of past meetings. [History]
   int get _historyCount {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
     int count = 0;
 
     for (final profile in repository.dummylistitem) {
       try {
         // Profile stores date as 'YYYY-MM-DD' and time as 'HH:mm'
         final meetingDateTime = DateTime.parse('${profile.date} ${profile.time}');
-        if (meetingDateTime.isBefore(today)) {
+        if (meetingDateTime.isBefore(now)) {
           count++;
         }
       } catch (e) {
@@ -64,6 +118,8 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = user_repo.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
@@ -86,9 +142,9 @@ class UserProfileScreen extends StatelessWidget {
                     CircleAvatar(
                       radius: 24,
                       backgroundColor: Colors.white.withOpacity(0.4),
-                      child: const Text(
-                        "N",
-                        style: TextStyle(
+                      child: Text(
+                        user?.initials ?? '?',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -96,10 +152,10 @@ class UserProfileScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "More Custom! Press Login Button!",
-                        style: TextStyle(
+                        user?.name ?? 'Please log in',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -107,8 +163,8 @@ class UserProfileScreen extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
-                      child: const Text("Login"),
+                      onPressed: user == null ? _showLoginDialog : _logout,
+                      child: Text(user == null ? 'Login' : 'Logout'),
                     ),
                   ],
                 ),
