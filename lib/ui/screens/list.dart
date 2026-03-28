@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/ui/form.dart' as formpage;
-import 'package:meetwho/model/profile.dart';
-import 'package:meetwho/data/list_repository.dart' as repository;
-import 'package:meetwho/ui/edit.dart' as editpage;
-import 'package:meetwho/ui/detail.dart' as detailpage;
+import 'package:meetwho/ui/screens/form.dart' as formpage;
+import 'package:meetwho/models/profile.dart';
+import 'package:meetwho/data/repositories/list_repository.dart' as repository;
+import 'package:meetwho/ui/screens/edit.dart' as editpage;
+import 'package:meetwho/ui/screens/detail.dart' as detailpage;
 
 class List extends StatefulWidget {
   const List({super.key});

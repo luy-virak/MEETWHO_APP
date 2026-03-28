@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/data/list_repository.dart' as repository;
-import 'package:meetwho/model/profile.dart';
-import 'package:meetwho/ui/list.dart' as list_page;
-import 'package:meetwho/ui/detail.dart' as detailpage;
+import 'package:meetwho/data/repositories/list_repository.dart' as repository;
+import 'package:meetwho/models/profile.dart';
+import 'package:meetwho/ui/screens/list.dart' as list_page;
+import 'package:meetwho/ui/screens/detail.dart' as detailpage;
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});

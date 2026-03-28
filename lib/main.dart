@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/ui/navbar/foot_navbar.dart' as pages;
-import 'package:meetwho/data/list_repository.dart' as repository;
+import 'package:meetwho/ui/navigation/foot_navbar.dart' as pages;
+import 'package:meetwho/data/repositories/list_repository.dart' as repository;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

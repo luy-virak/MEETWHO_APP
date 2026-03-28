@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/data/list_repository.dart' as repository;
+import 'package:meetwho/data/repositories/list_repository.dart' as repository;
 import 'package:meetwho/data/enums/category.dart';
-import 'package:meetwho/model/user.dart';
-import 'package:meetwho/data/user_repository.dart' as user_repo;
-
+import 'package:meetwho/models/user.dart';
+import 'package:meetwho/data/repositories/user_repository.dart' as user_repo;
 import 'package:meetwho/ui/widgets/category_pie_chart.dart';
 import 'package:meetwho/ui/widgets/overview_card.dart';
 

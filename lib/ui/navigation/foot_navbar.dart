@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
-import 'package:meetwho/ui/list.dart' as pages;
-
-import 'package:meetwho/ui/user_profile.dart' as pages; // kim
-import 'package:meetwho/ui/history_screen.dart' as pages; // kim
+import 'package:meetwho/ui/screens/list.dart' as pages;
+import 'package:meetwho/ui/screens/user_profile.dart' as pages; // kim
+import 'package:meetwho/ui/screens/history_screen.dart' as pages; // kim
 
 class FootNavbar extends StatefulWidget {
   const FootNavbar({super.key});

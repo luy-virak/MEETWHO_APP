@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/model/profile.dart';
+import 'package:meetwho/models/profile.dart';
 
 class Detail extends StatelessWidget {
   const Detail({super.key, required this.profile});

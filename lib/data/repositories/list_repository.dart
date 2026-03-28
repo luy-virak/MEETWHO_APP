@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:meetwho/model/profile.dart';
+import 'package:meetwho/models/profile.dart';
 
 final List<Profile> dummylistitem = [];
 
