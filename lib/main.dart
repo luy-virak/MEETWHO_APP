@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:meetwho/ui/navigation/foot_navbar.dart' as pages;
-import 'package:meetwho/data/repositories/list_repository.dart' as repository;
+import 'package:meetwho/data/repositories/list_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final repository = ListRepository();
   await repository.loadProfiles();
-  runApp(const MyApp());
+  
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => repository,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,21 +25,16 @@ class MyApp extends StatelessWidget {
       title: 'MeetWho',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors
-            .transparent, // IMPORTANT so Scaffold doesn't cover the gradient
+        scaffoldBackgroundColor: Colors.transparent,
       ),
-
-      // Wrap every screen with the same background
       builder: (context, child) {
         return MeetWhoBackground(child: child ?? const SizedBox());
       },
-
       home: const pages.FootNavbar(),
     );
   }
 }
 
-// ===== Background widget (ONLY background) =====
 class MeetWhoBackground extends StatelessWidget {
   const MeetWhoBackground({super.key, required this.child});
   final Widget child;
@@ -40,7 +43,6 @@ class MeetWhoBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Base gradient
         Positioned.fill(
           child: Container(
             decoration: const BoxDecoration(
@@ -56,7 +58,6 @@ class MeetWhoBackground extends StatelessWidget {
             ),
           ),
         ),
-        // Place the app's screens above the background
         Positioned.fill(
           child: child,
         ),

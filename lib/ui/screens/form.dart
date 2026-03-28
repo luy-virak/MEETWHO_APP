@@ -13,7 +13,9 @@ class _FormPageState extends State<FormPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _purposeController = TextEditingController();
+  
+  String? _selectedPurpose;
+  final List<String> _purposes = ['Work', 'Project', 'Personal', 'Team', 'School', 'Other'];
 
   Future<void> _pickTime() async {
     if (_dateController.text.isEmpty) {
@@ -30,14 +32,16 @@ class _FormPageState extends State<FormPage> {
 
     if (picked == null) return;
 
-    // Put chosen time into controller (HH:mm)
     final hh = picked.hour.toString().padLeft(2, '0');
     final mm = picked.minute.toString().padLeft(2, '0');
     _timeController.text = '$hh:$mm';
 
-    // Validate: if date is today, time must be >= now
     if (!_isSelectedDateTimeValid()) {
       _timeController.clear();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cannot pick a time in the past.')),
+      );
     }
   }
 
@@ -48,7 +52,7 @@ class _FormPageState extends State<FormPage> {
     final picked = await showDatePicker(
       context: context,
       initialDate: today,
-      firstDate: today, // ✅ block yesterday
+      firstDate: today,
       lastDate: DateTime(now.year + 5),
     );
 
@@ -58,7 +62,6 @@ class _FormPageState extends State<FormPage> {
       final dd = picked.day.toString().padLeft(2, '0');
       _dateController.text = '$yyyy-$mm-$dd';
 
-      // If date changed, and time is now invalid, clear time
       if (_timeController.text.isNotEmpty && !_isSelectedDateTimeValid()) {
         _timeController.clear();
       }
@@ -66,7 +69,6 @@ class _FormPageState extends State<FormPage> {
   }
 
   bool _isSelectedDateTimeValid() {
-    // date: YYYY-MM-DD
     final dateStr = _dateController.text.trim();
     final timeStr = _timeController.text.trim();
 
@@ -74,145 +76,124 @@ class _FormPageState extends State<FormPage> {
 
     final partsD = dateStr.split('-');
     final partsT = timeStr.split(':');
-    if (partsD.length != 3 || partsT.length != 2) return true;
-
+    
     final y = int.tryParse(partsD[0]) ?? 0;
     final m = int.tryParse(partsD[1]) ?? 0;
     final d = int.tryParse(partsD[2]) ?? 0;
-
     final hh = int.tryParse(partsT[0]) ?? 0;
     final mm = int.tryParse(partsT[1]) ?? 0;
 
     final selected = DateTime(y, m, d, hh, mm);
-
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final selectedDay = DateTime(selected.year, selected.month, selected.day);
-
-    // if selected day is today, must be >= now
-    if (selectedDay == today) {
-      return !selected.isBefore(now);
-    }
-
-    // future days are always valid
-    return true;
+    
+    return !selected.isBefore(now);
   }
 
   void onAdd() {
     if (_formKey.currentState!.validate()) {
-      // Create and return the new profile
       Profile newProfile = Profile(
-        name: _nameController.text,
-        time: _timeController.text,
-        date: _dateController.text,
-        interests: _purposeController.text
-            .split(',')
-            .map((e) => e.trim())
-            .toList(),
+        name: _nameController.text.trim(),
+        time: _timeController.text.trim(),
+        date: _dateController.text.trim(),
+        interests: [_selectedPurpose!],
       );
       Navigator.pop<Profile>(context, newProfile);
     }
   }
 
-  void onCancel() {
-    Navigator.pop<Profile>(context);
+  InputDecoration _inputStyle(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, color: Colors.blueAccent),
+      filled: true,
+      fillColor: Colors.white.withOpacity(0.9),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 46, 122, 246),
-              Color(0xFF45ABF0),
-              Color(0xFFE8F2FF),
-            ],
-          ),
-        ),
-        child: Column(
-          children: [
-            const _HeaderWave(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Please enter your name'
-                            : null,
-                      ),
-
-                      TextFormField(
-                        controller: _timeController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Time',
-                          hintText: 'Select time',
-                          suffixIcon: Icon(Icons.access_time),
-                        ),
-                        onTap: _pickTime,
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Please select a time'
-                            : null,
-                      ),
-
-                      TextFormField(
-                        controller: _dateController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Date',
-                          hintText: 'Select date',
-                          suffixIcon: Icon(Icons.calendar_today),
-                        ),
-                        onTap: _pickDate,
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Please select a date'
-                            : null,
-                      ),
-
-                      TextFormField(
-                        controller: _purposeController,
-                        decoration: const InputDecoration(
-                          labelText:
-                              'Purpose of the meeting (Only one Purpose is allowed)',
-                        ),
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? 'Please enter at least one interest'
-                            : null,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: onCancel,
+      backgroundColor: Colors.transparent,
+      body: Column(
+        children: [
+          const _HeaderWave(),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: _inputStyle('Person Name', Icons.person),
+                      validator: (value) => (value == null || value.isEmpty) ? 'Enter a name' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _dateController,
+                      readOnly: true,
+                      decoration: _inputStyle('Select Date', Icons.calendar_today),
+                      onTap: _pickDate,
+                      validator: (value) => (value == null || value.isEmpty) ? 'Select a date' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _timeController,
+                      readOnly: true,
+                      decoration: _inputStyle('Select Time', Icons.access_time),
+                      onTap: _pickTime,
+                      validator: (value) => (value == null || value.isEmpty) ? 'Select a time' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _selectedPurpose,
+                      decoration: _inputStyle('Meeting Purpose', Icons.category),
+                      items: _purposes.map((p) => DropdownMenuItem(value: p, child: Text(p))).toList(),
+                      onChanged: (val) => setState(() => _selectedPurpose = val),
+                      validator: (value) => (value == null) ? 'Select a purpose' : null,
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white),
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
                             child: const Text('Cancel'),
                           ),
-                          const SizedBox(width: 30),
-                          ElevatedButton(
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
                             onPressed: onAdd,
-                            child: const Text('Submit'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.blueAccent,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text('Create Meeting', style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -223,49 +204,22 @@ class _HeaderWave extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const r = 20.0;
-
     return Container(
-      height: 125,
-      width: double.infinity, // fill full width
-      margin:
-          EdgeInsets.zero, // no gap on sides// important so shadow has space
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(128),
-            blurRadius: 5,
-            offset: const Offset(0, 1),
-          ),
-        ],
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [Color(0xFF2E7AF6), Color(0xFF45ABF0), Color(0xFF4DD7FF)],
+      height: 140,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+        gradient: LinearGradient(
+          colors: [Color(0xFF2E7AF6), Color(0xFF45ABF0)],
         ),
       ),
       child: const Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
-            Text(
-              "Create Your Meeting",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              "Who are you meeting today?",
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: Color.fromARGB(179, 29, 28, 28),
-              ),
-            ),
+            SizedBox(height: 20),
+            Text("Create Meeting", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text("Schedule a new session", style: TextStyle(fontSize: 14, color: Colors.white70)),
           ],
         ),
       ),

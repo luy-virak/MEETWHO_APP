@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meetwho/data/repositories/list_repository.dart' as repository;
+import 'package:provider/provider.dart';
+import 'package:meetwho/data/repositories/list_repository.dart';
 import 'package:meetwho/data/enums/category.dart';
 import 'package:meetwho/models/user.dart';
 import 'package:meetwho/data/repositories/user_repository.dart' as user_repo;
@@ -62,54 +63,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
-  // Helper to convert the string 'purpose' from Profile to a Category enum
   Category _mapStringToCategory(String interest) {
     switch (interest.trim().toLowerCase()) {
-      case 'work':
-        return Category.work;
-      case 'project':
-        return Category.project;
-      case 'personal':
-        return Category.personal;
-      case 'team':
-        return Category.team;
-      case 'school':
-        return Category.school;
-      default:
-        return Category.other;
+      case 'work': return Category.work;
+      case 'project': return Category.project;
+      case 'personal': return Category.personal;
+      case 'team': return Category.team;
+      case 'school': return Category.school;
+      default: return Category.other;
     }
   }
 
-  // Calculate the number of past meetings. [History]
-  int get _historyCount {
+  int _calculateHistoryCount(List repositoryItems) {
     final now = DateTime.now();
     int count = 0;
-
-    for (final profile in repository.dummylistitem) {
+    for (final profile in repositoryItems) {
       try {
-        // Profile stores date as 'YYYY-MM-DD' and time as 'HH:mm'
         final meetingDateTime = DateTime.parse('${profile.date} ${profile.time}');
-        if (meetingDateTime.isBefore(now)) {
-          count++;
-        }
-      } catch (e) {
-        // Ignore if date/time parsing fails
-      }
+        if (meetingDateTime.isBefore(now)) count++;
+      } catch (_) {}
     }
     return count;
   }
 
-  // Calculate the number of meetings for each category. [Overview]
-  Map<Category, int> get _categoryCounts {
+  Map<Category, int> _calculateCategoryCounts(List repositoryItems) {
     final Map<Category, int> counts = {};
-    for (final profile in repository.dummylistitem) {
+    for (final profile in repositoryItems) {
       if (profile.interests.isNotEmpty) {
         final category = _mapStringToCategory(profile.interests.first);
-        counts.update(
-          category,
-          (value) => value + 1,
-          ifAbsent: () => 1,
-        );
+        counts.update(category, (v) => v + 1, ifAbsent: () => 1);
       }
     }
     return counts;
@@ -118,6 +100,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = user_repo.currentUser;
+    final repository = context.watch<ListRepository>();
+    final items = repository.profiles;
+    
+    final historyCount = _calculateHistoryCount(items);
+    final categoryCounts = _calculateCategoryCounts(items);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -128,8 +115,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-
-              // Display the user's profile information.
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -169,8 +154,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-
-              // Display a summary of the meetings.
               const Text(
                 "Meeting Overview",
                 style: TextStyle(
@@ -180,23 +163,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
               Row(
                 children: [
                   OverviewCard(
-                    value: repository.dummylistitem.length.toString(),
+                    value: items.length.toString(),
                     label: "Meeting",
                   ),
                   const SizedBox(width: 12),
                   OverviewCard(
-                    value: _historyCount.toString(),
+                    value: historyCount.toString(),
                     label: "History",
                   ),
                 ],
               ),
               const SizedBox(height: 30),
-
-              // Chart Card Text
               const Text(
                 "Chart",
                 style: TextStyle(
@@ -206,7 +186,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
               Container(
                 height: 230,
                 padding: const EdgeInsets.all(16),
@@ -222,7 +201,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: CategoryPieChart(
-                  categoryCounts: _categoryCounts,
+                  categoryCounts: categoryCounts,
                 ),
               ),
             ],

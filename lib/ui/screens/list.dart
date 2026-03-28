@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:meetwho/ui/screens/form.dart' as formpage;
 import 'package:meetwho/models/profile.dart';
-import 'package:meetwho/data/repositories/list_repository.dart' as repository;
+import 'package:meetwho/data/repositories/list_repository.dart';
 import 'package:meetwho/ui/screens/edit.dart' as editpage;
 import 'package:meetwho/ui/screens/detail.dart' as detailpage;
 
@@ -19,22 +20,24 @@ class _ListState extends State<List> {
       MaterialPageRoute(builder: (context) => const formpage.FormPage()),
     );
 
-    if (newProfile != null) {
-      await repository.addProfile(newProfile);
-      setState(() {});
+    if (newProfile != null && mounted) {
+      await context.read<ListRepository>().addProfile(newProfile);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final repository = context.watch<ListRepository>();
+    final items = repository.profiles;
+
     Widget content = const Center(child: Text('No Meetings added yet.'));
 
-    if (repository.dummylistitem.isNotEmpty) {
+    if (items.isNotEmpty) {
       content = ListView.builder(
         padding: const EdgeInsets.only(top: 8, bottom: 8),
-        itemCount: repository.dummylistitem.length,
+        itemCount: items.length,
         itemBuilder: (context, index) {
-          final profile = repository.dummylistitem[index];
+          final profile = items[index];
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -42,8 +45,6 @@ class _ListState extends State<List> {
               key: ValueKey(
                 '${profile.name}-${profile.date}-${profile.time}-$index',
               ),
-
-              // Swipe RIGHT (startToEnd) = Edit
               background: ClipRRect(
                 borderRadius: BorderRadius.circular(18),
                 child: Container(
@@ -53,8 +54,6 @@ class _ListState extends State<List> {
                   child: const Icon(Icons.edit, color: Colors.white, size: 28),
                 ),
               ),
-
-              // Swipe LEFT (endToStart) = Delete
               secondaryBackground: ClipRRect(
                 borderRadius: BorderRadius.circular(18),
                 child: Container(
@@ -68,13 +67,9 @@ class _ListState extends State<List> {
                   ),
                 ),
               ),
-
-              // ✅ Important: for EDIT swipe, return FALSE (do not dismiss).
               confirmDismiss: (direction) async {
                 if (direction == DismissDirection.endToStart) {
-                  // Delete confirmation
-                  final ok =
-                      await showDialog<bool>(
+                  return await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Delete Meeting'),
@@ -94,14 +89,10 @@ class _ListState extends State<List> {
                         ),
                       ) ??
                       false;
-
-                  return ok;
                 }
 
                 if (direction == DismissDirection.startToEnd) {
-                  // Edit confirmation (optional)
-                  final ok =
-                      await showDialog<bool>(
+                  final ok = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Edit Meeting'),
@@ -125,7 +116,6 @@ class _ListState extends State<List> {
                   if (!ok) return false;
                   if (!mounted) return false;
 
-                  // Navigate to Edit page
                   final updatedProfile = await Navigator.push<Profile>(
                     context,
                     MaterialPageRoute(
@@ -134,29 +124,20 @@ class _ListState extends State<List> {
                     ),
                   );
 
-                  if (!mounted) return false;
-
-                  if (updatedProfile != null) {
-                    await repository.updateProfileAt(index, updatedProfile);
-                    setState(() {});
+                  if (updatedProfile != null && mounted) {
+                    await context
+                        .read<ListRepository>()
+                        .updateProfileAt(index, updatedProfile);
                   }
-
-                  // ✅ Do NOT dismiss item on edit
                   return false;
                 }
-
                 return false;
               },
-
-              // ✅ Only delete reaches here (because delete returns true)
               onDismissed: (direction) {
                 if (direction == DismissDirection.endToStart) {
-                  // IMPORTANT: don't await here (avoid Dismissible tree error)
                   repository.removeProfileAt(index);
-                  setState(() {});
                 }
               },
-
               child: MeetingCard(
                 profile: profile,
                 onTap: () {
@@ -175,6 +156,7 @@ class _ListState extends State<List> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -209,7 +191,6 @@ class _ListState extends State<List> {
   }
 }
 
-// Header
 class _HeaderWave extends StatelessWidget {
   const _HeaderWave();
 
@@ -220,7 +201,6 @@ class _HeaderWave extends StatelessWidget {
     return Container(
       height: 125,
       width: double.infinity,
-      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(r),
         boxShadow: [
@@ -264,7 +244,6 @@ class _HeaderWave extends StatelessWidget {
   }
 }
 
-// Card
 class MeetingCard extends StatelessWidget {
   const MeetingCard({super.key, required this.profile, this.onTap});
   final VoidCallback? onTap;
@@ -281,9 +260,7 @@ class MeetingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initials = _initials(profile.name);
-    final tag = profile.interests.isNotEmpty
-        ? profile.interests.first
-        : "No Tag";
+    final tag = profile.interests.isNotEmpty ? profile.interests.first : "No Tag";
 
     return Container(
       decoration: BoxDecoration(
