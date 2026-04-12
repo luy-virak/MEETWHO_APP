@@ -1,16 +1,29 @@
-# meetwho
-
-A new Flutter project.
+# MeetWho
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To run the MeetWho application on your local machine, follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version `^3.10.1`)
+- A code editor (e.g., VS Code or Android Studio)
+- An emulator or a physical device
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Running the App
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd meetwho
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   flutter pub get
+   ```
+
+3. **Launch the application**:
+   ```bash
+   flutter run
+   ```
